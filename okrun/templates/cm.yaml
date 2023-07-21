@@ -1,0 +1,7 @@
+apiVersion: v1
+data:
+  key1: {{ .Values.val1 }}
+  creds: "{{ ((.Values.credentials).secretContents).cloud }}"
+kind: ConfigMap
+metadata:
+  name: my-config
