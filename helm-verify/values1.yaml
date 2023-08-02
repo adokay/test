@@ -1,0 +1,6 @@
+credentials:
+  secretContents:
+    cloud: |
+      [sandbox-rex-sddc]
+      aws_access_key_id = x-k8s-sandbox-rex-sddc-save-s3
+      aws_secret_access_key = +uH4hYJGtEz5uF9YZL5q7f8hE31kt8ItUr/nBI4I

@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  test: "value"
+  name: {{ .Values.name }}
+  {{- template "check-url" . }}
+  url: {{ .Values.url | quote }}
+  creds: {{ .Values.credentials.secretContents.cloud | quote }}
