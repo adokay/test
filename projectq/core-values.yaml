@@ -1,0 +1,260 @@
+snapshotsEnabled: false
+deployRestic: true
+configuration:
+  defaultVolumesToRestic: true
+  provider: aws
+  logFormat: json
+  features: EnableCSI
+initContainers:
+  - name: velero-plugin-for-aws
+    image: velero/velero-plugin-for-aws:v1.5.0
+    resources:
+      requests:
+        cpu: 10m
+        memory: 128Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
+    volumeMounts:
+      - mountPath: /target
+        name: plugins
+  - name: velero-plugin-for-csi
+    image: velero/velero-plugin-for-csi:v0.3.0
+    resources:
+      requests:
+        cpu: 10m
+        memory: 128Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
+    volumeMounts:
+      - mountPath: /target
+        name: plugins
+resources:
+  requests:
+    cpu: 10m
+    memory: 128Mi
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+
+kubectl:
+  initResources:
+    requests:
+      cpu: 10m
+      memory: 64Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
+  resources:
+    requests:
+      cpu: 10m
+      memory: 64Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
+
+restic:
+  resources:
+    requests:
+      cpu: 10m
+      memory: 512Mi
+    limits:
+      cpu: 1
+      memory: 2512Mi
+  tolerations:
+  - operator: Exists
+    effect: NoSchedule
+
+credentials:
+  secretContents:
+    cloud: |
+      [sandbox-rex-sddc]
+      aws_access_key_id = x-k8s-sandbox-rex-sddc-save-s3
+      aws_secret_access_key = +uH4hYJGtEz5uF9YZL5q7f8hE31kt8ItUr/nBI4I
+      [sandbox-tap]
+      aws_access_key_id = x-k8s-sandbox-tap-save-s3
+      aws_secret_access_key = gCFaRHlnaVeGTBguEwXCnjWlz7zb+NR5vcxviK+E
+      [outils-transverses-dc1]
+      aws_access_key_id = x-k8s-outils-transverses-dc1-save-s3
+      aws_secret_access_key = tNUQ7QPIsYjzXli2eSguY8zkktSfcsOXd6N2L7bY
+      [outils-transverses-dc2]
+      aws_access_key_id = x-k8s-outils-transverses-dc2-save-s3
+      aws_secret_access_key = OKDdLr1U1nc7dU/0QAhf/ZKgqhh7DFwnFNVrFG9x
+      [poc-iceberg]
+      aws_access_key_id = x-k8s-poc-iceberg-save-s3
+      aws_secret_access_key = 43cKHzK2JtHZ4crFEtmlZjqysJJ//FDBK9Ijek4O
+      [sandbox-outils-sddc]
+      aws_access_key_id = x-k8s-sandbox-outils-sddc-save-s3
+      aws_secret_access_key = snfCvildjhA9aRGnsnRzCbQmm+hgaQyYeqzr25/M
+      [sandbox-base-sddc]
+      aws_access_key_id = x-k8s-sandbox-base-sddc-save-s3
+      aws_secret_access_key = 7NzDBaPfDefgxMoaphbJGBb/U1ZGmPw0jtDVvOJh
+      [bench01-sddc]
+      aws_access_key_id = x-k8s-bench01-sddc-save-s3
+      aws_secret_access_key = o/0j9GbftPBhNbWVlV40kMJtTE7oRvIfElKTWpiq
+      [bench02-sddc]
+      aws_access_key_id = x-k8s-bench02-sddc-save-s3
+      aws_secret_access_key = /eqideiq5rnv6LtqEoRHrR7XSISp0BhMisfl/lMd
+      [cicd-sddc]
+      aws_access_key_id = x-k8s-cicd-sddc-save-s3
+      aws_secret_access_key = NoDIf7bubi8bhQsxWaAJZN8Axvq5oz9RBHEUBdgS
+      [dev01-sddc]
+      aws_access_key_id = x-k8s-dev01-sddc-save-s3
+      aws_secret_access_key = d3BnfIRgqsOtYhxPpWmF0f+f8G2LwwXMW7fVdF5O
+      [dev02-sddc]
+      aws_access_key_id = x-k8s-dev02-sddc-save-s3
+      aws_secret_access_key = rKDzC1d9CbWvFkEzcG5by5c75G103RhJWH7UJEVq
+      [fab-outils-sddc]
+      aws_access_key_id = x-k8s-fab-outils-sddc-save-s3
+      aws_secret_access_key = OGbYc4znZgfU44STwOetg3fojmkpcBRPyJhEUJk1
+      [media-sddc]
+      aws_access_key_id = x-k8s-media-sddc-save-s3
+      aws_secret_access_key = vOr83FPMkjVFjhc9QJrqzw+e+8JY8ruzd/0WveTK
+      [mop-echanges-sddc]
+      aws_access_key_id = x-k8s-mop-echanges-sddc-save-s3
+      aws_secret_access_key = 7sPGA4CYDV3lqqXakuqlttWA736Y3pxei2cgEdPW
+      [mop-outils-sddc]
+      aws_access_key_id = x-k8s-mop-outils-sddc-save-s3
+      aws_secret_access_key = zBLeJjjshiV83QJcm+UobtI4r6IkTkzh15+L4P3y
+      [orl-echanges-sddc]
+      aws_access_key_id = x-k8s-orl-echanges-sddc-save-s3
+      aws_secret_access_key = Gyj/PmrP9En4ex795Hxozq4O6ED7lnPf1rli5sP2
+      [orl-outils-sddc]
+      aws_access_key_id = x-k8s-orl-outils-sddc-save-s3
+      aws_secret_access_key = saMtm7dzg4yFx87ACQ8fqdmIOTjTBsWNDzhnWNyD
+      [preprod01-sddc]
+      aws_access_key_id = x-k8s-preprod01-sddc-save-s3
+      aws_secret_access_key = xYGpX1DVThA2Rw2+BvrIsM7c1N5pS6w7q6HsgqpQ
+      [preprod02-sddc]
+      aws_access_key_id = x-k8s-preprod02-sddc-save-s3
+      aws_secret_access_key = lRCb0V7QxkUNJ6X0YeRsaAVfHk+3j7LIsqRwxCUF
+      [prod01-sddc]
+      aws_access_key_id = x-k8s-prod01-sddc-save-s3
+      aws_secret_access_key = Ozr5UKO2FoqxfYWv7NDrzkqHelRHoVFE+NtP+TnL
+      [prod02-sddc]
+      aws_access_key_id = x-k8s-prod02-sddc-save-s3
+      aws_secret_access_key = weDBojpeOo2tNCecir0YF7j8FdAguSOISGfCDLsz
+      [pms-echanges-sddc]
+      aws_access_key_id = x-k8s-pms-echanges-sddc-save-s3
+      aws_secret_access_key = PzBWg8QQRZeRpphEnHFrcUvwZ72nlI4TjQdSn2aQ
+      [pms01-sddc]
+      aws_access_key_id = x-k8s-pms01-sddc-save-s3
+      aws_secret_access_key = 7HAsNjQVBbql71w0A1XI2PcUYQ4J6+svw3r/7GlQ
+      [pms02-sddc]
+      aws_access_key_id = x-k8s-pms02-sddc-save-s3
+      aws_secret_access_key = FwoWddoWykHbed+THtcwHWcvECrXoZI6aA/55CQW
+      [pms-outils-sddc]
+      aws_access_key_id = x-k8s-pms-outils-sddc-save-s3
+      aws_secret_access_key = EOh+oW9CuxH5H9v40qI6SQjaJfSq/F3nJpvKL2Hl
+      [z1-dev]
+      aws_access_key_id = x-k8s-z1-dev-save-s3
+      aws_secret_access_key = JcuVdlsbCi7OGs062e+ZYETwh28s1u9WIESb8xrH
+      [z1-preprod]
+      aws_access_key_id = x-k8s-z1-preprod-save-s3
+      aws_secret_access_key = xJFW1/0RWvAsSRnd4pAqGq+zXl8YIla1aFGiwscL      
+      [z1-prod-mop]
+      aws_access_key_id = x-k8s-z1-prod-mop-save-s3
+      aws_secret_access_key = wgI4Vcyzgx0LUCJ7SRQMtfrwXaN/yW1rr2YwozAy
+      [z1-pri]
+      aws_access_key_id = x-k8s-z1-pri-save-s3
+      aws_secret_access_key = B9PZuInr5mkvTjcjGX3PR6zLLPMSMZzmpun8DgoI
+      [z2-dev]
+      aws_access_key_id = x-k8s-z2-dev-save-s3
+      aws_secret_access_key = 8NCgUltYSw3FiPK4DxbzNVJGRpxBbZ4pmdZERVwJ
+      [z2-preprod]
+      aws_access_key_id = x-k8s-z2-preprod-save-s3
+      aws_secret_access_key = FcOWugtdc0qPGXVvFh70dyca+4Q8hTAWldZM7FBr
+      [z2-prod-mop]
+      aws_access_key_id = x-k8s-z2-prod-mop-save-s3
+      aws_secret_access_key = ZyCipnPMfOjZ9Qs7X/S5aNHgeQarDL4+Dr7AEJrI
+      [z2-pri]
+      aws_access_key_id = x-k8s-z2-pri-save-s3
+      aws_secret_access_key = gpm7mIVgzR3hEhx5Vs7ZSaoeoxvq+OjDv3i/1Bfa
+      [z3-dev]
+      aws_access_key_id = x-k8s-z3-dev-save-s3
+      aws_secret_access_key = r3N0Pr8sBFh1ukxdN0BF/q83cZ0RAWXeD8crTWuz
+      [z3-preprod]
+      aws_access_key_id = x-k8s-z3-preprod-save-s3
+      aws_secret_access_key = Frw+F4Em+gFPFr25+61O7AOIlGNR3y6eXVhNA0Um
+      [z3-prod-mop]
+      aws_access_key_id = x-k8s-z3-prod-mop-save-s3
+      aws_secret_access_key = V9aQTGOYmpdAyg7IwjZri21iJLhjfpZ79EbIQ+ej
+      [z3-pri]
+      aws_access_key_id = x-k8s-z3-pri-save-s3
+      aws_secret_access_key = Tmfjd0tMac97ezld92X36l6Kdpfjp9T9nxg6mWSL
+      [z4-dev]
+      aws_access_key_id = x-k8s-z4-dev-save-s3
+      aws_secret_access_key = 08cElV8+9v6YO5rTmTb1PxtU0PojFQBPeS/AQjqC
+      [z4-preprod]
+      aws_access_key_id = x-k8s-z4-preprod-save-s3
+      aws_secret_access_key = w4ZZ0lSPSfMGRlcAU7+o8j7R4+aQcGhGysroL7m/
+      [z4-prod-mop]
+      aws_access_key_id = x-k8s-z4-prod-mop-save-s3
+      aws_secret_access_key = GEYbLZwV/0EEgXm3v8J0XptSM0LG4fKtGOpV03HE
+      [z4-pri]
+      aws_access_key_id = x-k8s-z4-pri-save-s3
+      aws_secret_access_key = 43joRSmof+P4ota7eBWd6dr7c8uhK8gkSR1VQPp7
+      [z5-dev]
+      aws_access_key_id = x-k8s-z5-dev-save-s3
+      aws_secret_access_key = 8qBhpTstd2FGIo63t1FAiFLznHo53YbgHyBT0bM+
+      [z5-preprod]
+      aws_access_key_id = x-k8s-z5-preprod-save-s3
+      aws_secret_access_key = xL8u/8YmcFB6sLA7+3RTBdH7po6RtxXRq/qq7vAq
+      [z5-prod-mop]
+      aws_access_key_id = x-k8s-z5-prod-mop-save-s3
+      aws_secret_access_key = 7ju+q17oOPccpfEiR1kykJOxDeUX/0E91LLvINEO
+      [z5-pri]
+      aws_access_key_id = x-k8s-z5-pri-save-s3
+      aws_secret_access_key = N4yKnVBqK1evXvOUd2F9r1rQbZeu6i6UcCCjzgl5
+      [z6-dev]
+      aws_access_key_id = x-k8s-z6-dev-save-s3
+      aws_secret_access_key = 5PL/QW9xZYj0rMCgsWNdCmDXlqW8fANgmmT9m/eZ
+      [z6-preprod]
+      aws_access_key_id = x-k8s-z6-preprod-save-s3
+      aws_secret_access_key = 7V/2RXDAFNmkS5l861o4ZWTZ4RlyLiF3pNzirqkq
+      [z6-prod-orl]
+      aws_access_key_id = x-k8s-z6-prod-orl-save-s3
+      aws_secret_access_key = YZlle33ceKRZ/Ya5rqr4KlFQ/xAdGppEjez0hAyQ
+      [z6-prod-mop]
+      aws_access_key_id = x-k8s-z6-prod-mop-save-s3
+      aws_secret_access_key = cNJcDctDXVJA1DK4ixAeiCRMYR6XU/vuWubjZmGc
+      [z6-pri]
+      aws_access_key_id = x-k8s-z6-pri-save-s3
+      aws_secret_access_key = TpEbuLjf8UpTKawhHRxVMz7kDyyW4LjzURSANYvS
+      [z8-dev]
+      aws_access_key_id = x-k8s-z8-dev-save-s3
+      aws_secret_access_key = /o2BIgnOpTVyjt5gZqxnBnuSUqTe2POYfLFNPJEW
+      [z8-preprod]
+      aws_access_key_id = x-k8s-z8-preprod-save-s3
+      aws_secret_access_key = zTgmFlBq1Ff5V2maM0+7x3j/syfoBlM4VqL9dtSv
+      [z8-prod-mop]
+      aws_access_key_id = x-k8s-z8-prod-mop-save-s3
+      aws_secret_access_key = N9t2OTHUTKGgpuwzyv9O0wR7h4BGw62tFsoI6V6k
+      [z8-pri]
+      aws_access_key_id = x-k8s-z8-pri-save-s3
+      aws_secret_access_key = OIuGVn4BIIXR4TganUyBFTZYF/vNtHG56Rd/vvjv
+      [z9-dev]
+      aws_access_key_id = x-k8s-z9-dev-save-s3
+      aws_secret_access_key = R6vVgIxHjSJR9t3zve0qpMymUzQR0xRXhmI1UpQy
+      [z9-preprod]
+      aws_access_key_id = x-k8s-z9-preprod-save-s3
+      aws_secret_access_key = liQwHzvgHs+rBsyfUXlC1qk7jkQBJ7re+WatwGpI
+      [z9-prod-mop]
+      aws_access_key_id = x-k8s-z9-prod-mop-save-s3
+      aws_secret_access_key = VzXd/MUzD5AL6F02u3lV7+O9PUR43+JMJoM53je3
+      [z9-pri]
+      aws_access_key_id = x-k8s-z9-pri-save-s3
+      aws_secret_access_key = j4ApwzJBe0fSon+4yECU0O++nc2aCXDulJqqFnnf
+      [z1469-bench]
+      aws_access_key_id = x-k8s-z1469-bench-save-s3
+      aws_secret_access_key = yKMPKsq4P+JOzhmiBig8JuagMAfm9ck1+xQZIkdf
+      [z2358-bench]
+      aws_access_key_id = x-k8s-z2358-bench-save-s3
+      aws_secret_access_key = eYvq4wrFAisGPBRCsVzA/vC1gjqRYpicCrlUNcDd
+      [z1469-sandbox]
+      aws_access_key_id = x-k8s-z1469-sandbox-save-s3
+      aws_secret_access_key = hBdUUoSL7+4Z5M2lr+wThfBmjnxL7HZa1xMI+wqk
+      [z2358-sandbox]
+      aws_access_key_id = x-k8s-z2358-sandbox-save-s3
+      aws_secret_access_key = dAnMzrPadz6JFpmyw7sJocNOanE+rEPlDhAi7Zzw
