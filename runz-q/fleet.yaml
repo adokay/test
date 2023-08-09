@@ -1,0 +1,9 @@
+defaultNamespace: test-ef
+helm:
+  chart: new-chart
+  releaseName: test
+  valuesFiles:
+    - values.yaml
+    - core-values.yaml
+  values:
+    val1: "global.fleet.clusterLabels.namecluster"
