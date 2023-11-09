@@ -26,6 +26,7 @@ service:
   type: ClusterIP
   port: 8
 
+0
 # Default values for fluent-bit.
 
 NODENAME: "dummy-nodename"
