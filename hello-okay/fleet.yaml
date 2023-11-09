@@ -1,0 +1,4 @@
+helm:
+  valuesFiles: 
+  - amprion-fluentbit-values.yml
+  - values.yaml
