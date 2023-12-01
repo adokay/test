@@ -1,0 +1,218 @@
+defaultNamespace: amprion-logging
+helm:
+  repo: https://fluent.github.io/helm-charts
+  chart: fluent-bit  
+  version: 0.30.4
+
+  releaseName: amprion-logging
+
+  # Any values that should be placed in the `values.yaml` and passed to helm during
+  # install.
+  valuesFiles:
+    - amprion-fluentbit-values.yaml
+
+targetCustomizations:
+- name: rancher-t-blue
+  # A selector used to match a specific cluster by name.    
+  clusterSelector:
+    matchLabels:
+      management.cattle.io/cluster-display-name: local
+  # Custom Helm options override the options at the root
+  helm:
+    values:
+      ## https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/classic-mode/configuration-file
+      config: 
+        ## https://docs.fluentbit.io/manual/pipeline/inputs
+        inputs: |
+
+          # Kubernetes Event Exporter Logs 
+          [INPUT]
+              Name tail
+              # Path for downstream
+              Path /var/log/containers/*_amprion-logging_event-exporter*
+              Tag kubeevent.*
+              multiline.parser docker, cri
+              Mem_Buf_Limit 20MB
+              Skip_Long_Lines On
+
+          # Audit Logs 
+          [INPUT]
+              Name tail
+              Path /var/lib/rancher/rke2/server/logs/*
+              Exclude_Path /var/lib/rancher/rke2/server/logs/audit.log
+              Tag rke2server.*
+              Mem_Buf_Limit 20MB
+              Skip_Long_Lines On
+
+          [INPUT]
+              Name tail
+              Path /var/log/containers/*_cattle-system_rancher-audit-log*
+              Tag rancher-auditlogs.*
+              multiline.parser docker, cri
+              Mem_Buf_Limit 20MB
+
+          # All other specific container logs
+          [INPUT]
+              Name tail
+              # Path for downstream
+              Path /var/log/containers/*_kube-system_*, /var/log/containers/*_longhorn-systems_*, /var/log/containers/*_amprion-logging_fluent-bit*, /var/log/containers/*_amprion-monitoring_*, /var/log/containers/*_amprion-monitoring-fed_*, /var/log/containers/*_cattle-system_*
+              # Path for upstream
+              #Path /var/log/containers/*_kube-system_*, /var/log/containers/*_longhorn-systems_*, /var/log/containers/*_amprion-logging_fluent-bit*, /var/log/containers/*_amprion-monitoring_*, /var/log/containers/*_amprion-monitoring-fed_*, /var/log/containers/*_cattle-_*
+              Tag kube.*
+              multiline.parser docker, cri
+              Mem_Buf_Limit 20MB
+              Skip_Long_Lines On
+
+          [INPUT]
+              Name tail
+              Path /var/lib/rancher/rke/log/*.log
+              Tag rke1logs.*
+              Mem_Buf_Limit 20MB
+              Skip_Long_Lines On
+
+          [INPUT]
+              Name tail
+              Path /var/lib/rancher/rke2/agent/logs/*
+              Tag rke2agent.*
+              Mem_Buf_Limit 20MB
+              Skip_Long_Lines On
+
+          [INPUT]
+              Name tail
+              Path /var/lib/rancher/rke2/agent/containerd/containerd.log
+              Tag containerd.*
+              Mem_Buf_Limit 20MB
+              Skip_Long_Lines On
+              Path_Key filepath
+
+
+          [INPUT]
+              Name             tail
+              Tag              k8s-auditlogs.*
+              Path             /var/lib/rancher/rke2/server/logs/audit.log
+              Parser           k8saudit_parser
+              Mem_Buf_Limit    20MB
+              Skip_Long_Lines  On
+
+
+          [INPUT]
+              Name            systemd
+              Tag             journald-rke2-server.*
+              Path             /var/log/journal
+              Systemd_Filter  _SYSTEMD_UNIT=rke2-server#
+
+
+          [INPUT]
+              Name            systemd
+              Tag             journald-rke2-agent.*
+              Path             /var/log/journal
+              Systemd_Filter  _SYSTEMD_UNIT=rke2-agent.service
+
+        ## https://docs.fluentbit.io/manual/pipeline/filters
+        filters: |
+          [FILTER]
+              Name kubernetes
+              Match kube.*
+              Merge_Log On
+              Keep_Log Off
+              K8S-Logging.Parser On
+              K8S-Logging.Exclude On
+
+          [FILTER]
+              Name kubernetes
+              Match kubeevent.*
+              Merge_Log On
+              Keep_Log Off
+              K8S-Logging.Parser On
+              K8S-Logging.Exclude On
+
+          [FILTER]
+              Name kubernetes
+              Match rancher-auditlogs.*
+              Merge_Log On
+              Keep_Log Off
+              K8S-Logging.Parser On
+              K8S-Logging.Exclude On
+
+          [FILTER]
+              Name modify
+              Match kube.*
+              Add LogType "K8s-Pod-Log"
+
+          [FILTER]
+              Name modify
+              Match kubeevent.*
+              Add LogType "K8s-Event"
+
+          [FILTER]
+              Name record_modifier
+              Match rke1logs.*
+              Record hostname ${NODENAME}
+          [FILTER]
+              Name modify
+              Match rke1logs.*
+              Add LogType "rke1Logs"
+
+          [FILTER]
+              Name record_modifier
+              Match rke2server.*
+              Record hostname ${NODENAME}
+          [FILTER]
+              Name modify
+              Match rke2server.*
+              Add LogType "rke2ServerLogs"
+
+          [FILTER]
+              Name record_modifier
+              Match rke2agent.*
+              Record hostname ${NODENAME}
+          [FILTER]
+              Name modify
+              Match rke2agent.*
+              Add LogType "rke2AgentLogs"
+
+          [FILTER]
+              Name record_modifier
+              Match containerd.*
+              Record hostname ${NODENAME}
+          [FILTER]
+              Name modify
+              Match containerd.*
+              Add LogType "containerd"
+
+
+          [FILTER]
+              Name record_modifier
+              Match k8s-auditlogs.*
+              Record hostname ${NODENAME}
+          [FILTER]
+              Name modify
+              Match k8s-auditlogs.*
+              Add LogType "k8s-auditlogs"
+          
+          [FILTER]
+              Name record_modifier
+              Match rancher-auditlogs.*
+              Record hostname ${NODENAME}
+          [FILTER]
+              Name modify
+              Match rancher-auditlogs.*
+              Add LogType "rancher-auditlogs"
+
+          [FILTER]
+              Name record_modifier
+              Match journald-rke2-server.*
+              Record hostname ${NODENAME}
+          [FILTER]
+              Name modify
+              Match journald-rke2-server.*
+              Add LogType "journald-rke2-server"
+
+          [FILTER]
+              Name record_modifier
+              Match journald-rke2-agent.*
+              Record hostname ${NODENAME}
+          [FILTER]
+              Name modify
+              Match journald-rke2-agent.*
+              Add LogType "journald-rke2-agent"

@@ -1,0 +1,6 @@
+defaultNamespace: redis
+helm:
+  repo: https://charts.helm.sh/stable
+  version: "10.5.7"
+  chart: redis
+  releaseName: redis-me
