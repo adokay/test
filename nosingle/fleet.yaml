@@ -1,0 +1,4 @@
+defaultNamespace: redisok
+helm:
+  chart: https://github.com/adlightme/fleetex/raw/main/redis.tgz
+  releaseName: redisnew
