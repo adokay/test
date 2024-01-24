@@ -1,0 +1,4 @@
+defaultNamespace: redisok
+helm:
+  chart: ./app1/redis
+  releaseName: redisnew
