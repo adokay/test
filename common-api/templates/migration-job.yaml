@@ -1,0 +1,115 @@
+{{- if .Values.migration.enabled -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "common.names.job" . }}
+  labels: {{ ( include "common.labels.job" . ) | nindent 4 }}
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  backoffLimit: {{ .Values.migration.backoffLimit }}
+  template:
+    spec:
+      restartPolicy: {{ .Values.migration.restartPolicy | quote }}
+      securityContext: {{ toYaml .Values.securityContext | nindent 8 }}
+      {{- if .Values.volume }}
+      volumes:
+        - name: {{ include "common.names.volume" . }}
+          configMap:
+            name: {{ .Values.volume.configMap | default .Release.Name   }}
+      {{- end }}
+      containers:
+        - name: {{ include "common.names.jobPod" . }}
+          image: {{ include "common.images.image" . }}
+
+          {{- if ( not .Values.migration.args ) | and ( not .Values.migration.command ) }}
+            {{- fail "provide .Values.migration.command or .Values.migration.args" }}
+          {{- end }}
+
+          {{- if .Values.migration.command }}
+          command: {{ .Values.migration.command | toYaml | nindent 12 }}
+          {{- end }}
+
+          {{- if .Values.migration.args }}
+          args: {{ .Values.migration.args | toYaml | nindent 12 }}
+          {{- end }}
+
+          env:
+            {{- if .Values.env }}
+            {{- toYaml .Values.env | nindent 12 }}
+            {{- end }}
+
+            {{- if .Values.addGateWayPublicKey }}
+            - name: GATEWAY__CERTIFICATE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "common.names.gatewayCertSecret" . }}
+                  key: tls.crt
+            {{- end }}
+
+            {{- if .Values.addGateWayPrivateKey }}
+            - name: PRIVATE_KEY__KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "common.names.gatewayCertSecret" . }}
+                  key: tls.key
+            {{- end }}
+
+
+            {{- if .Values.addRabbitMQDefaultUrl }}
+            - name: RABBITMQ__URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "common.names.rabbitmqCredentials" . }}
+                  key: url
+            {{- end }}
+
+            {{- if  .Values.addRabbitMQDefaultCred }}
+            - name: RABBITMQ__USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "common.names.rabbitmqCredentials" . }}
+                  key: username
+
+            - name: RABBITMQ__PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "common.names.rabbitmqCredentials" . }}
+                  key: password
+            {{- end }}
+
+          envFrom:
+          {{- if .Values.envFrom }}
+            {{- toYaml .Values.envFrom | nindent 12 }}
+          {{- end }}
+
+          {{- if .Values.configs }}
+            - configMapRef:
+                name: {{ .Release.Name }}
+          {{- end }}
+          {{- if .Values.secrets }}
+            - secretRef:
+                name: {{ .Release.Name }}
+          {{- end }}
+
+          {{- if .Values.sealedSecrets.enabled }}
+            - secretRef:
+                name: {{ .Values.sealedSecrets.name | default ( include "common.names.sealedSecret" . ) }}
+          {{- end }}
+
+          {{- if .Values.infisical.enabled }}
+            - secretRef:
+                name: {{ include "common.names.infisical.managedSecret" . }}
+          {{- end }}
+
+          resources: {{- toYaml ( .Values.resources | required "provide resources" ) | nindent 12 }}
+
+          {{- if .Values.volume }}
+          volumeMounts:
+            - name: {{ include "common.names.volume" . }}
+              mountPath: {{ .Values.volume.mountPath }}
+              readOnly: true
+              subPath: {{ .Values.volume.key }}
+          {{- end }}
+{{- end -}}

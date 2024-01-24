@@ -1,0 +1,6 @@
+apiVersion: v2
+appVersion: 0.2.1
+description: A common Helm library used in DIT's helm charts
+name: common
+type: library
+version: 0.2.1

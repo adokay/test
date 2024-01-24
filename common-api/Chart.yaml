@@ -1,0 +1,10 @@
+apiVersion: v2
+appVersion: 0.3.12
+dependencies:
+- name: common
+  repository: oci://reg.dev.krd/charts
+  version: 0.2.1
+description: A Helm chart for Kubernetes
+name: common-api
+type: application
+version: 0.3.12

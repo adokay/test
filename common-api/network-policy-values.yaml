@@ -1,0 +1,28 @@
+networkPolicy:
+  enabled: true
+  egress:
+    testService1:
+      ports:
+        - port: 443|name
+          protocol: UDP
+      podMatchLabels:
+        label: sample
+      namespace: sample-name
+    testService2:
+      podMatchLabels:
+        label: sample
+    testService3:
+      ipBlock: 10.10.0.0/24
+  ingress:
+    testService1:
+      ports:
+        - port: 443|name
+      podMatchLabels:
+        label: sample
+    testService2:
+      podMatchLabels:
+        label: sample
+      namespace: sample-name
+    testService3:
+      podMatchLabels:
+        label: sample

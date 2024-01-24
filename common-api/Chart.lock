@@ -1,0 +1,6 @@
+dependencies:
+- name: common
+  repository: oci://reg.dev.krd/charts
+  version: 0.2.1
+digest: sha256:b028f2203be82f2aee8304f7ef36f6c8a60cfe3ec261f59991195fc3bbcab6e9
+generated: "2023-10-23T16:23:07.228990435+03:00"

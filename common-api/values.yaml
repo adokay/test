@@ -1,0 +1,159 @@
+addRabbitMQDefaultCred: false
+addRabbitMQDefaultUrl: false
+
+addGateWayPublicKey: true
+addGateWayPrivateKey: false
+
+infisicalAutoReload: false
+
+minReadySeconds: 5
+replicas: 1
+
+port: 8080
+
+securityContext:
+  runAsGroup: 1001
+  runAsNonRoot: true
+  runAsUser: 1001
+
+image:
+  fullPath:
+  registry: reg.dev.krd
+  repository:
+  tag:
+
+resources:
+  limits:
+    memory: 200Mi
+  requests:
+    cpu: 10m
+
+ingress:
+  enabled: false
+  host:
+  ingressClassName: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-cluster-issuer
+
+args: []
+
+env:
+
+envFrom:
+
+volume:
+
+extraVolumes: []
+
+extraVolumeMounts: []
+
+secrets:
+
+sealedSecrets:
+  enabled: false
+  name:
+  namespace:
+  encryptedData:
+
+infisical:
+  enabled: false
+  secretsScope:
+    secretsPath:
+    envSlug:
+  sealedSecret:
+    name:
+    namespace:
+    token:
+  managedSecret:
+    name:
+    namespace:
+
+configs:
+
+podAnnotations:
+
+migration:
+  enabled: false
+  backoffLimit: 2
+  restartPolicy: Never
+  args: []
+  command: []
+
+livenessProbe:
+  enabled: true
+  spec:
+    timeoutSeconds: 5
+    httpGet:
+      path: /health
+      port: http
+
+readinessProbe:
+  enabled: true
+  spec:
+    timeoutSeconds: 5
+    httpGet:
+      path: /status
+      port: http
+
+networkPolicy:
+  enabled: false
+  egress: {}
+  ingress: {}
+
+global:
+  image:
+    fullPath:
+    registry:
+    repository:
+    tag:
+
+hostAliases: []
+
+metrics:
+  enabled: false
+  path: /metrics
+
+otel:
+  enabled: false
+  env:
+    - name: OTEL_COLLECTOR_NAME
+      value: groundcover-opentelemetry-collector.groundcover.svc.cluster.local
+
+    - name: OTEL_EXPORTER_OTLP_ENDPOINT
+      value: http://groundcover-opentelemetry-collector.groundcover.svc.cluster.local:4317
+
+    - name: OTEL_SERVICE_NAME
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.labels['app.kubernetes.io/component']
+
+    - name: OTEL_K8S_NAMESPACE
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.namespace
+
+    - name: OTEL_K8S_NODE_NAME
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: spec.nodeName
+
+    - name: OTEL_K8S_POD_NAME
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.name
+
+    - name: OTEL_K8S_POD_UID
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.uid
+
+    - name: OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE
+      value: cumulative
+
+    - name: OTEL_RESOURCE_ATTRIBUTES
+      value: service.name=$(OTEL_SERVICE_NAME),service.instance.id=$(OTEL_K8S_POD_UID),service.namespace=$(OTEL_K8S_NAMESPACE),k8s.namespace.name=$(OTEL_K8S_NAMESPACE),k8s.node.name=$(OTEL_K8S_NODE_NAME),k8s.pod.name=$(OTEL_K8S_POD_NAME)
