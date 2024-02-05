@@ -1,0 +1,3 @@
+defaultNamespace: releasens
+helm:
+  chart: git::https://adlightme:ghp%5FoKoYD0t0QoVc8YpfFlyonB1gAnoeqJ4RJGB3@github.com/adlightme/some/helm
