@@ -1,0 +1,18 @@
+always_reload: true
+users:
+-
+  EMail: egov-devops@akdb.de
+  Fullname: devops-neuvector
+  Locale: en
+  Password: {{ k8s.neuvector.config.devops_password }}
+  Role: admin
+  Timeout: 3600
+-
+  Fullname: monitor
+  Password: {{k8s.neuvector.config.admin_password}}
+  Role: reader
+-
+  Fullname: devops-ciops
+  Locale: en
+  Password: {{ k8s.neuvector.config.devops_ciops_password }}
+  Role: ciopsAKDB

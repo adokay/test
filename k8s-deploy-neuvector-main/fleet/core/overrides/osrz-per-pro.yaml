@@ -1,0 +1,10 @@
+controller:
+  ingress:
+    host: neuvector-api.osrz-per-pro.k8s.outsourcing.akdb.net
+  federation:
+    managedsvc:
+      ingress:
+        host: neuvector-managed.osrz-per-pro.k8s.outsourcing.akdb.net
+manager:
+  ingress:
+    host: neuvector.osrz-per-pro.k8s.outsourcing.akdb.net

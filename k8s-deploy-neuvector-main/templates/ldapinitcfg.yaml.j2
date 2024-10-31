@@ -1,0 +1,23 @@
+always_reload: true
+directory: MicrosoftAD
+Hostname: akdb.net
+Port: 636
+SSL: true
+base_dn: {{ k8s.neuvector.config.base_dn }}
+bind_dn: DevOps-LDAP
+bind_password: {{ k8s.neuvector.config.bind_password }}
+group_member_attr: distinguishedName  
+username_attr: sAMAccountName 
+Enable: true  
+Default_Role: reader 
+group_mapped_roles:
+{% if 'infra' == k8s.global.context %}
+  - group: K8S_rancher_admins
+    global_role: fedAdmin
+{% endif %}
+  - group: {{ 'K8S_'+ k8s.global.context+'_admins' }}
+    global_role: AKDBAdmin
+  - group: {{ 'K8S_'+ k8s.global.context+'_users' }}
+    global_role: reader
+  - group: {{ 'K8S_'+ k8s.global.context+'_view' }}
+    global_role: reader

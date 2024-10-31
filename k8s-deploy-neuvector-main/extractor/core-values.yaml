@@ -1,0 +1,31 @@
+registry: registry.rancher.com
+controller:
+  enabled: true
+  prime:
+    enabled: true
+    image:
+      repository: rancher/mirrored-neuvector-compliance-config
+  image:
+    repository: rancher/mirrored-neuvector-controller
+enforcer:
+  enabled: true
+  image:
+    repository: rancher/mirrored-neuvector-enforcer
+manager:
+  enabled: true
+  image:
+    repository: rancher/mirrored-neuvector-manager
+cve:
+  scanner:
+    enabled: true
+    image:
+      repository: rancher/mirrored-neuvector-scanner
+  updater:
+    enabled: true
+    image:
+      repository: rancher/mirrored-neuvector-updater
+internal:
+  certmanager:
+    enabled: false
+  autoGenerateCert: true
+  autoRotateCert: true

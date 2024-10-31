@@ -1,0 +1,26 @@
+admissionControls:
+  rules:
+    allow-trident-trident-operator:
+      comment: "Allow deployment of Trident-Operator. Deployment requires SYS_ADMIN capability"
+      criteria:
+      - name: image
+        op: containsAny
+        path: image
+        value: harbor.infra.k8s.akdb.net/infrastruktur/trident-operator/trident:*,harbor.infra.k8s.akdb.net/infrastruktur/trident-operator/csi-node-driver-registrar:*
+      - name: namespace
+        op: containsAny
+        path: namespace
+        value: trident
+      action: allow
+    allow-netscaler-ingress-cnc-router:
+      comment: "Allow deployment of Netscaler-Ingress (CNC-Router). Deployment requires NET_ADMIN capability"
+      criteria:
+      - name: image
+        op: containsAny
+        path: image
+        value: harbor.infra.k8s.akdb.net/infrastruktur/cnc-router:*
+      - name: namespace
+        op: containsAny
+        path: namespace
+        value: netscaler-ingress
+      action: allow

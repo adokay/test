@@ -1,0 +1,138 @@
+registry: harbor.infra.k8s.akdb.net/infrastruktur/neuvector
+tag: 5.4.0
+serviceAccount: neuvector
+rbac: true
+
+controller:
+  enabled: true
+  image:
+    repository: core/mirrored-neuvector-controller
+  replicas: 3
+  disruptionbudget: 2
+  priorityClassName: system-cluster-critical
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 2
+      # maxUnavailable must be 2 to work with podAntiAffinity which pins the controller on each master node
+    type: RollingUpdate
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - topologyKey: kubernetes.io/hostname
+        labelSelector:
+          matchLabels:
+            app: neuvector-controller-pod
+  resources:
+    limits:
+      memory: 8192Mi
+    requests:
+      cpu: 1
+      memory: 1024Mi
+  apisvc:
+    type: ClusterIP
+  ingress:
+    enabled: true
+    ingressClassName: "nginx"
+  pvc:
+    enabled: true
+    accessModes:
+    - ReadWriteMany
+    capacity: "10Gi"
+    existingClaim: "neuvector-persistent-data"
+  federation:
+    managedsvc:
+      type: ClusterIP
+      ingress:
+        enabled: true
+        ingressClassName: "nginx"
+  env:
+  - name: NO_DEFAULT_ADMIN
+    value: "true"
+  - name: CUSTOM_CHECK_CONTROL
+    value: "strict"
+
+enforcer:
+  enabled: true
+  image:
+    repository: core/mirrored-neuvector-enforcer
+  resources:
+    limits:
+      memory: 2048Mi
+    requests:
+      cpu: 1
+      memory: 768Mi
+  priorityClassName: system-cluster-critical
+  tolerations:
+  - effect: NoExecute
+    key: CriticalAddonsOnly
+    operator: Exists
+  env:
+  - name: NV_SYSTEM_GROUPS
+    value: "cattle-system;cattle-fleet-system;kube-system;neuvector"
+  - name: CUSTOM_CHECK_CONTROL
+    value: "strict"
+
+manager:
+  enabled: true
+  image:
+    repository: core/mirrored-neuvector-manager
+  resources:
+    limits:
+      memory: 2048Mi
+    requests:
+      cpu: 1
+      memory: 1028Mi
+  svc:
+    type: ClusterIP
+  ingress:
+    enabled: true
+    ingressClassName: "nginx"
+  runAsUser: "5400"
+
+cve:
+  updater:
+    enabled: true
+    schedule: "0 0 * * *"
+    image:
+      repository: core/mirrored-neuvector-updater
+      tag: latest
+    resources:
+      limits:
+        memory: 256Mi
+      requests:
+        cpu: 512m
+        memory: 64Mi
+    runAsUser: "5400"
+
+  scanner:
+    enabled: true
+    podAnnotations:
+      fleet.cattle.io/ignore-replicas: "true"
+    image:
+      repository: core/mirrored-neuvector-scanner
+      tag: latest
+    resources:
+      limits:
+        memory: 4096Mi
+        ephemeral-storage: 25Gi
+      requests:
+        cpu: 512m
+        memory: 512Mi
+        ephemeral-storage: 1Gi
+    runAsUser: "5400"
+
+crdwebhook:
+  enabled: false
+
+admissionwebhook:
+  type: ClusterIP
+
+k3s:
+  enabled: true
+
+internal:
+  certmanager:
+    enabled: false
+  autoGenerateCert: true
+  autoRotateCert: true

@@ -1,0 +1,24 @@
+# Default values for neuvector-config chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+neuvector:
+  sysinitcfg:
+    alwaysReload: "true"
+    newServicePolicyMode: Discover
+    newServiceProfileBaseline: basic
+    clusterName: ""
+    monitorServiceMesh: "true"
+    registryHttpProxy: "false"
+    registryHttpsProxy: "false"
+    proxyURL: http://proxy.akdb.net:3128
+    xffEnabled: "true"
+    netServiceStatus: "false"
+    netServicePolicyMode: Monitor
+    scannerAutoscale:
+      strategy: delayed
+      minPods: 2
+      maxPods: 5
+    noTelemetryReport: "true"
+    autoScan: "true"
+    unusedGroupAging: 24

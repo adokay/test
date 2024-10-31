@@ -1,0 +1,9 @@
+---
+k8s:
+  neuvector:
+    config:
+      admin_password: "{{ lookup('env', 'K8S_NEUVECTOR_ADMIN') }}"
+      devops_password: "{{ lookup('env', 'K8S_NEUVECTOR_DEVOPS') }}"
+      devops_ciops_password: "{{ lookup('env', 'K8S_NEUVECTOR_DEVOPS_CIOPS') }}"
+      base_dn: "{{ lookup('env', 'K8S_NEUVECTOR_BASE_DN') }}"
+      bind_password: "{{ lookup('env', 'K8S_NEUVECTOR_BIND') }}"

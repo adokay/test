@@ -1,0 +1,14 @@
+admissionControls:
+  policyMode: Monitor
+  rules:
+    deny-container-images-without-akdb-signature:
+      comment: "Deny images without AKDB cosign signature"
+      criteria:
+      - name: imageVerifiers
+        op: notContainsAny
+        path: imageVerifiers
+        value: AKDB/cosign
+      - name: imageVerifiers
+        op: notContainsAny
+        path: imageVerifiers
+        value: OZG/cosign

@@ -1,0 +1,5 @@
+apiVersion: v2
+appVersion: "0.0.1"
+description: neuvector-pvc helper chart
+name: neuvector-pvc
+version: 0.0.1

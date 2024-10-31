@@ -1,0 +1,25 @@
+defaultNamespace: neuvector
+labels:
+  devops.akdb.de/role: "neuvector-config"
+
+helm:
+  takeOwnership: true
+  releaseName: neuvector-config
+  values:
+    neuvector:
+      sysinitcfg:
+        clusterName: "${ .ClusterName }"
+  valuesFiles:
+  - values.yaml
+
+targetCustomizations:
+- name: federationMaster
+  helm:
+    values:
+      neuvector:
+        sysinitcfg:
+          scannerAutoscale:
+            strategy: immediate
+            minPods: 6
+            maxPods: 24
+  clusterName: infra

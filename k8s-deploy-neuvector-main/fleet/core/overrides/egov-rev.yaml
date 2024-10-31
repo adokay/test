@@ -1,0 +1,4 @@
+enforcer:
+  resources:
+    limits:
+      memory: 4096Mi

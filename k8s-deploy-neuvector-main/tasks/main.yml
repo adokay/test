@@ -1,0 +1,51 @@
+---
+- name: Ensure that NeuVector namespace is present
+  kubernetes.core.k8s:
+    wait: true
+    context: "{{ k8s.global.context }}"
+    state: present
+    definition:
+      api_version: v1
+      kind: Namespace
+      metadata:
+        name: neuvector
+  delegate_to: 127.0.0.1
+  run_once: true
+
+- name: Ensure that neuvector-helm-secret is present
+  kubernetes.core.k8s:
+    context: "{{ k8s.global.context }}"
+    state: present
+    wait: true
+    wait_timeout: 15
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: neuvector-helm-secrets
+        namespace: neuvector
+      stringData:
+        secrets.yaml: |
+          exporter:
+            CTRL_USERNAME: "monitor"
+            CTRL_PASSWORD: "{{ lookup('env', 'K8S_NEUVECTOR_ADMIN') }}"
+  run_once: true
+  delegate_to: 127.0.0.1
+
+- name: Ensure init configurations are present
+  kubernetes.core.k8s:
+    context: "{{ k8s.global.context }}"
+    state: present
+    wait: true
+    wait_timeout: 15
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: neuvector-init
+        namespace: neuvector
+      data:
+        ldapinitcfg.yaml: "{{ lookup('template', 'ldapinitcfg.yaml.j2' ) | b64encode }}"
+        userinitcfg.yaml: "{{ lookup('template', 'userinitcfg.yaml.j2' ) | b64encode }}"
+  run_once: true
+  delegate_to: 127.0.0.1

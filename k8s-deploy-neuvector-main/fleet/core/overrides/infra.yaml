@@ -1,0 +1,26 @@
+controller:
+  replicas: 3
+  resources:
+    limits:
+      memory: 8192Mi
+    requests:
+      cpu: 1
+      memory: 4096Mi
+  federation:
+    mastersvc:
+      type: ClusterIP
+      ingress:
+        enabled: true
+        host: neuvector-primary.infra.k8s.akdb.net
+        ingressClassName: "nginx"
+    managedsvc:
+      ingress:
+        enabled: false
+cve:
+  scanner:
+    resources:
+      limits:
+        memory: 8192Mi
+      requests:
+        cpu: 1
+        memory: 1024Mi

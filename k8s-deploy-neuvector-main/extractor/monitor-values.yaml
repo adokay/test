@@ -1,0 +1,6 @@
+registry: registry.rancher.com
+exporter:
+  enabled: true
+  image:
+    repository: rancher/mirrored-neuvector-prometheus-exporter
+    tag: 1-1.0.0

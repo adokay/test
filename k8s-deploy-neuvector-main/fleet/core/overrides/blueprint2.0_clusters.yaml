@@ -1,0 +1,51 @@
+global:
+  cattle:
+    url: https://rancher-test.akdb.net/
+controller:
+  ingress:
+    ingressClassName: "netscaler"
+    annotations:
+      ingress.citrix.com/servicegroup: '{"neuvector-controller-api":{"cipHeader":"X-Forwarded-For"}}'
+      ingress.citrix.com/monitor: '{"neuvector-controller-api":{"type":"http-ecv"}}'
+      ingress.citrix.com/secure-backend: 'True'
+    tls: true
+    secretName: ""
+  federation:
+    managedsvc:
+      ingress:
+        ingressClassName: "netscaler"
+        annotations:
+          ingress.citrix.com/servicegroup: '{"neuvector-fed-managed":{"cipHeader":"X-Forwarded-For"}}'
+          ingress.citrix.com/monitor: '{"neuvector-fed-managed":{"type":"http-ecv"}}'
+          ingress.citrix.com/secure-backend: 'True'
+        tls: true
+        secretName: ""
+
+enforcer:
+  tolerations:
+  - effect: NoExecute
+    key: CriticalAddonsOnly
+    operator: Exists
+  - effect: NoExecute
+    key: "node-role.kubernetes.io/control-plane"
+    operator: Exists
+  - effect: NoExecute
+    key: "node-role.kubernetes.io/etcd"
+    operator: Exists
+  - effect: NoSchedule
+    key: "node-role.kubernetes.io/control-plane"
+    operator: Exists
+  - effect: NoSchedule
+    key: "node-role.kubernetes.io/etcd"
+    operator: Exists
+
+manager:
+  ingress:
+    ingressClassName: "netscaler"
+    annotations:
+      ingress.citrix.com/servicegroup: '{"neuvector-manager":{"cipHeader":"X-Forwarded-For"}}'
+      # Should we use something else as http-ecv when protcol type is SSL?
+      ingress.citrix.com/monitor: '{"neuvector-manager":{"type":"http-ecv"}}'
+      ingress.citrix.com/secure-backend: 'True'
+    tls: true
+    secretName: ""
