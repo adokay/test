@@ -1,0 +1,8 @@
+diff:
+  comparePatches:
+  - apiVersion: v1
+    kind: Secret
+    name: sometoken
+    namespace: sameone
+    operations:
+    - {"op":"remove", "path":"/data"}
