@@ -3,6 +3,6 @@ diff:
   - apiVersion: v1
     kind: Secret
     name: sometoken
-    namespace: sameone
+    namespace: nextone
     operations:
     - {"op":"remove", "path":"/data"}
