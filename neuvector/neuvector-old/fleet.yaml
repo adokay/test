@@ -1,3 +1,0 @@
-defaultNamespace: cattle-neuvector-system
-helm:
-  releaseName: neuvector-fleet
