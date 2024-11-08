@@ -32,7 +32,7 @@ targetCustomizations:
     repo: https://charts.rancher.io
     version: "104.0.2+up2.8.0"
     valuesFiles:
-    - rke-int-neuvector-values.yaml 
+    - default-chart-values.yaml 
   clusterSelector:
     matchLabels:
       management.cattle.io/cluster-display-name: rke
