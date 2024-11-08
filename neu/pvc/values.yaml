@@ -1,0 +1,12 @@
+# Default values for NeuVector PVC chart.
+# This is a YAML-formatted file.
+# Declare variable
+
+global:
+  name: neuvector-persistent-data
+  storage:
+    class: infrastructure-nfs-storage
+    size: 10Gi
+    accessMode: ReadWriteMany
+  helm:
+    resourcePolicy: keep

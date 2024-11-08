@@ -1,0 +1,17 @@
+defaultNamespace: neuvector
+labels:
+  devops.akdb.de/role: "neuvector-crd"
+
+helm:
+  takeOwnership: true
+  releaseName: neuvector-crd
+  chart: oci://harbor.infra.k8s.akdb.net/infrastruktur/helm-charts/neuvector/crd
+  version: 2.8.2 # App Version 5.4.0
+  valuesFiles:
+  - values.yaml
+
+# targetCustomizations:
+# - name: playground
+#   helm:
+#     version: 2.8.0
+#   clusterName: playground

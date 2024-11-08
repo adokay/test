@@ -1,0 +1,43 @@
+defaultNamespace: neuvector
+labels:
+  devops.akdb.de/role: "neuvector-admission-controls"
+
+helm:
+  takeOwnership: true
+  releaseName: neuvector-admission-controls
+  chart: oci://harbor.infra.k8s.akdb.net/infrastruktur/helm-charts/neuvector-securityrules
+  version: 2.2.8
+  valuesFiles:
+  - allow_list.yaml
+  - deny_list.yaml
+
+dependsOn:
+- name: neuvector-fleet-crd
+- name: neuvector-fleet-core
+
+targetCustomizations:
+- name: whiteList-Digital-Factory-Int
+  clusterName: digital-factory-int
+  helm:
+    valuesFiles:
+    - cluster_values/digital-factory-int.yaml
+
+- name: whiteList-Digital-Factory-Pre
+  clusterName: digital-factory-pre
+  helm:
+    valuesFiles:
+    - cluster_values/digital-factory-pre.yaml
+
+- name: whiteList-Digital-Factory-Pro
+  clusterName: digital-factory-pro
+  helm:
+    valuesFiles:
+    - cluster_values/digital-factory-pro.yaml
+
+- name: Blueprint2.0 Clusters
+  clusterSelector:
+    matchLabels:
+      project: blueprint2.0
+  helm:
+    valuesFiles:
+    - cluster_values/blueprint2.0_clusters.yaml

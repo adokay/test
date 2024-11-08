@@ -1,0 +1,108 @@
+defaultNamespace: neuvector
+labels:
+  devops.akdb.de/role: "neuvector-core"
+
+helm:
+  takeOwnership: true
+  releaseName: neuvector
+  chart: oci://harbor.infra.k8s.akdb.net/infrastruktur/helm-charts/neuvector/core
+  version: 2.8.2 # App Version 5.4.0
+  timeoutSeconds: 300
+  waitForJobs: true
+  values:
+    controller:
+      ingress:
+        host: neuvector-api.${ .ClusterName }.k8s.akdb.net
+      federation:
+        managedsvc:
+          ingress:
+            host: neuvector-managed.${ .ClusterName }.k8s.akdb.net
+    manager:
+      ingress:
+        host: neuvector.${ .ClusterName }.k8s.akdb.net
+  valuesFiles:
+  - values.yaml
+
+dependsOn:
+- name: neuvector-fleet-pvc
+- name: neuvector-fleet-crd
+- name: neuvector-fleet-neuvector-config
+
+targetCustomizations:
+- name: devFederationMaster
+  clusterName: devops-integration
+  helm:
+    valuesFiles:
+    - overrides/devops-integration.yaml
+
+- name: core-platform
+  clusterName: core-platform
+  helm:
+    valuesFiles:
+    - overrides/core-platform.yaml
+
+- name: osrz-per-pro
+  clusterName: osrz-per-pro
+  helm:
+    valuesFiles:
+    - overrides/osrz-per-pro.yaml
+
+- name: osrz-per-int
+  clusterName: osrz-per-int
+  helm:
+    valuesFiles:
+    - overrides/osrz-per-int.yaml
+
+- name: egov-rev
+  clusterName: egov-rev
+  helm:
+    valuesFiles:
+    - overrides/egov-rev.yaml
+
+- name: federationMaster
+  clusterName: infra
+  helm:
+    valuesFiles:
+    - overrides/infra.yaml
+
+# - name: playground
+#   clusterName: playground
+#   helm:
+#     version: 2.8.0
+#     values:
+#       tag: 5.4.0
+
+- name: Blueprint2.0 Clusters
+  clusterSelector:
+    matchLabels:
+      project: blueprint2.0
+  helm:
+    valuesFiles:
+    - overrides/blueprint2.0_clusters.yaml
+
+diff:
+  comparePatches:
+  - apiVersion: apps/v1
+    kind: Deployment
+    name: neuvector-scanner-pod
+    namespace: neuvector
+    operations:
+    - {"op": "remove", "path": "/spec/replicas"}
+  - apiVersion: v1
+    kind: Secret
+    name: neuvector-internal-certs
+    namespace: neuvector
+    operations:
+    - {"op": "remove", "path": "/data"}
+  - apiVersion: v1
+    kind: Secret
+    name: neuvector-manager-secret
+    namespace: neuvector
+    operations:
+    - {"op": "remove", "path": "/data"}
+  - apiVersion: v1
+    kind: Secret
+    name: neuvector-controller-secret
+    namespace: neuvector
+    operations:
+    - {"op": "remove", "path": "/data"}

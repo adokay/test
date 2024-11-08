@@ -1,0 +1,14 @@
+registry: harbor.infra.k8s.akdb.net/infrastruktur/neuvector
+
+exporter:
+  enabled: true
+  image:
+    repository: monitor/mirrored-neuvector-prometheus-exporter
+    tag: 1-1.0.0
+  grafanaDashboard:
+    enabled: true
+  svc:
+    enabled: true
+    type: ClusterIP
+  serviceMonitor:
+    enabled: true

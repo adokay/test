@@ -1,0 +1,18 @@
+defaultNamespace: neuvector
+labels:
+  devops.akdb.de/role: "neuvector-pvc"
+
+helm:
+  takeOwnership: true
+  releaseName: neuvector-pvc
+
+targetCustomizations:
+  - name: Blueprint2.0 Clusters
+    clusterSelector:
+      matchLabels:
+        project: blueprint2.0
+    helm:
+      values:
+        global:
+          storage:
+            class: ontap-nas-csi

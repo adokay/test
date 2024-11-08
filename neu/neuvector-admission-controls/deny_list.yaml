@@ -1,0 +1,311 @@
+# Default values for neuvector-security chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+global:
+  neuvector:
+    enabled: True
+
+admissionControls:
+  policyMode: Monitor
+  rules:
+    deny-container-without-liveness-probes:
+      comment: "Container requires liveness probes"
+      criteria:
+      - name: customPath
+        op: notExist
+        path: item.spec.containers[_].livenessProbe
+        type: customPath
+        value: ""
+        value_type: key
+    deny-container-without-readiness-probes:
+      comment: "Container requires readiness probes"
+      criteria:
+      - name: customPath
+        op: notExist
+        path: item.spec.containers[_].readinessProbe
+        type: customPath
+        value: ""
+        value_type: key
+    deny-container-from-untrusted-registries:
+      comment: "Restrict image registries to trusted ones"
+      criteria:
+      - name: imageRegistry
+        op: notContainsAny
+        path: imageRegistry
+        value: https://harbor.infra.k8s.akdb.net/,https://harbor.akdb.de/,https://*.repo-m.akdb.net/
+      mode: protect
+    deny-deployment-in-default-namespace:
+      comment: "Deny deployments in default namespace"
+      criteria:
+      - name: namespace
+        op: containsAny
+        path: namespace
+        value: default
+      mode: protect
+    deny-container-with-latest-tag:
+      comment: "Deny containers with latest tag"
+      criteria:
+      - name: image
+        op: containsAny
+        path: image
+        value: '*:latest'
+    deny-automount-of-service-account-token:
+      comment: "Deny automount of service account token"
+      criteria:
+      - name: customPath
+        op: =
+        path: item.spec.automountServiceAccountToken
+        template_kind: podTemplate
+        type: customPath
+        value: "true"
+        value_type: boolean
+    deny-high-privilege-sysctls:
+      comment: "Deny high privilege sysctls"
+      criteria:
+      - name: customPath
+        op: containsOtherThan
+        path: item.spec.securityContext.sysctls[_].name
+        template_kind: podTemplate
+        type: customPath
+        value: kernel.shm_rmid_forced,net.ipv4.ip_local_port_range,net.ipv4.tcp_syncookies,net.ipv4.ping_group_range
+        value_type: string
+      mode: protect
+    deny-run-as-root:
+      comment: "Container required runAsRoot set to false"
+      criteria:
+      - name: runAsRoot
+        op: =
+        path: runAsRoot
+        value: "true"
+    deny-container-without-run-as-non-root:
+      comment: "Container requires runAsNonRoot set to true"
+      criteria:
+      - name: customPath
+        op: =
+        path: item.spec.containers[_].securityContext.runAsNonRoot
+        type: customPath
+        value: "false"
+        value_type: boolean
+    deny-global-security-context-wihtout-run-as-non-root:
+      comment: "Global security context requires runAsNonRoot set to true"
+      criteria:
+      - name: customPath
+        op: =
+        path: item.spec.securityContext.runAsNonRoot
+        type: customPath
+        value: "false"
+        value_type: boolean
+    deny-container-uid-lower-then:
+      comment: "Deny containers with uid lower then 998"
+      criteria:
+      - name: customPath
+        op: <=
+        path: item.spec.containers[_].securityContext.runAsUser
+        type: customPath
+        value: "998"
+        value_type: number
+    deny-container-gid-lower-then:
+      comment: "Deny containers with gid lower then 998"
+      criteria:
+      - name: customPath
+        op: <=
+        path: item.spec.containers[_].securityContext.runAsGroup
+        type: customPath
+        value: "998"
+        value_type: number
+    deny-global-security-context-uid-lower-then:
+      comment: "Deny security context with uid lower then 998"
+      criteria:
+      - name: customPath
+        op: <=
+        path: item.spec.securityContext.runAsUser
+        type: customPath
+        value: "998"
+        value_type: number
+    deny-global-security-context-gid-lower-then:
+      comment: "Deny security context with gid lower then 998"
+      criteria:
+      - name: customPath
+        op: <=
+        path: item.spec.securityContext.runAsGroup
+        type: customPath
+        value: "998"
+        value_type: number
+    deny-container-with-non-default-proc-mount:
+      comment: "Deny containers with non default proc mount"
+      criteria:
+      - name: customPath
+        op: containsOtherThan
+        path: item.spec.containers[_].securityContext.procMount
+        template_kind: podTemplate
+        type: customPath
+        value: Default
+        value_type: string
+      mode: protect
+    deny-container-with-selinux-options:
+      comment: "Deny containers with selinux options"
+      criteria:
+      - name: ""
+        op: exist
+        path: item.spec.containers[_].securityContext.seLinuxOptions.user
+        template_kind: podTemplate
+        type: customPath
+        value: ""
+        value_type: string
+      - name: ""
+        op: exist
+        path: item.spec.containers[_].securityContext.seLinuxOptions.role
+        template_kind: podTemplate
+        type: customPath
+        value: ""
+        value_type: string
+      - name: ""
+        op: exist
+        path: item.spec.containers[_].securityContext.seLinuxOptions.type
+        template_kind: podTemplate
+        type: customPath
+        value: ""
+        value_type: string
+      - name: ""
+        op: exist
+        path: item.spec.containers[_].securityContext.seLinuxOptions.level
+        template_kind: podTemplate
+        type: customPath
+        value: ""
+        value_type: key
+      mode: protect
+    deny-global-security-context-with-selinux-options:
+      comment: "Deny security context with selinux options"
+      criteria:
+      - name: ""
+        op: exist
+        path: item.spec.securityContext.seLinuxOptions.user
+        template_kind: podTemplate
+        type: customPath
+        value: ""
+        value_type: string
+      - name: ""
+        op: exist
+        path: item.spec.securityContext.seLinuxOptions.role
+        template_kind: podTemplate
+        type: customPath
+        value: ""
+        value_type: string
+      - name: ""
+        op: exist
+        path: item.spec.securityContext.seLinuxOptions.type
+        template_kind: podTemplate
+        type: customPath
+        value: ""
+        value_type: string
+      - name: ""
+        op: exist
+        path: item.spec.securityContext.seLinuxOptions.level
+        template_kind: podTemplate
+        type: customPath
+        value: ""
+        value_type: key
+      mode: protect
+    deny-run-as-privileged:
+      comment: "Deny running container as privileged"
+      criteria:
+      - name: runAsPrivileged
+        op: =
+        path: runAsPrivileged
+        value: "true"
+    deny-container-usage-of-host-port:
+      comment: "Deny containers using host port"
+      criteria:
+      - name: customPath
+        op: exist
+        path: item.spec.containers[_].ports[_].hostPort
+        template_kind: podTemplate
+        type: customPath
+        value: ""
+        value_type: key
+      mode: protect
+    deny-host-namespaces:
+      comment: "Deny host namespaces"
+      criteria:
+      - name: shareIpcWithHost
+        op: =
+        path: shareIpcWithHost
+        value: "true"
+      - name: shareNetWithHost
+        op: =
+        path: shareNetWithHost
+        value: "true"
+      - name: sharePidWithHost
+        op: =
+        path: sharePidWithHost
+        value: "true"
+      mode: protect
+    deny-container-to-add-new-capabilities:
+      comment: "Deny containers to add new capabilities"
+      criteria:
+      - name: customPath
+        op: exist
+        path: item.spec.containers[_].securityContext.capabilities.add
+        template_kind: podTemplate
+        type: customPath
+        value: ""
+        value_type: key
+      mode: protect
+    deny-privilege-escalation:
+      comment: "Deny privilege escalation"
+      criteria:
+      - name: allowPrivEscalation
+        op: =
+        path: allowPrivEscalation
+        value: "true"
+    deny-container-without-limits:
+      comment: "Container requires limits"
+      criteria:
+      - name: resourceLimit
+        op: ""
+        path: resourceLimit
+        sub_criteria:
+        - name: cpuRequest
+          op: <=
+          value: "0"
+        - name: memoryLimit
+          op: <=
+          value: "0"
+        - name: memoryRequest
+          op: <=
+          value: "0"
+        value: ""
+    deny-container-with-writeable-filesystem:
+      comment: "Container requires readonly filesystem set to true"
+      criteria:
+      - name: customPath
+        op: =
+        path: item.spec.containers[_].securityContext.readOnlyRootFilesystem
+        type: customPath
+        value: "false"
+        value_type: boolean
+    deny-container-without-readonly-filesystem-setting:
+      comment: "Container requires readonly filesystem"
+      criteria:
+      - name: customPath
+        op: notExist
+        path: item.spec.containers[_].securityContext.readOnlyRootFilesystem
+        template_kind: podTemplate
+        type: customPath
+        value: ""
+        value_type: key
+    deny-container-images-that-are-not-signed:
+      comment: "Deny images that are not signed"
+      criteria:
+      - name: imageSigned
+        op: =
+        path: imageSigned
+        value: "false"
+    deny-container-images-without-akdb-signature:
+      comment: "Deny images without AKDB cosign signature"
+      criteria:
+      - name: imageVerifiers
+        op: notContainsAny
+        path: imageVerifiers
+        value: AKDB/cosign

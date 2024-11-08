@@ -1,0 +1,35 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: akdb-neuvector
+rules:
+  - apiGroups:
+      - neuvector.com
+    resources:
+      - nvsecurityrules
+      - nvclustersecurityrules
+      - nvcomplianceprofiles
+      - nvadmissioncontrolsecurityrules
+      - nvdlpsecurityrules
+      - nvvulnerabilityprofiles
+      - nvwafsecurityrules
+    verbs:
+      - get
+      - create
+      - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: akdb-neuvector-namespace-admin
+rules:
+  - apiGroups:
+      - neuvector.com
+    resources:
+      - nvsecurityrules
+    verbs:
+      - get
+      - create
+      - patch
+      - delete

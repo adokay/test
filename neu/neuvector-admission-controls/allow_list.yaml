@@ -1,0 +1,61 @@
+# Default values for neuvector-security chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+global:
+  neuvector:
+    enabled: True
+
+admissionControls:
+  rules:
+    ###### Inherit from default admission control rule ######
+    # allow-deployments-in-system-namespaces:
+    #   comment: "Allow deployments in system namespaces"
+    #   criteria:
+    #   - name: namespace
+    #     op: containsAny
+    #     value: kube-system,kube-public,istio-system
+    #   action: allow
+    # allow-deployments-in-neuvector-namespaces:
+    #   comment: "Allow deployments in neuvector namespaces"
+    #   criteria:
+    #   - name: namespace
+    #     op: containsAny
+    #     value: neuvector
+    #   action: allow
+    allow-deployments-in-rancher-namespaces:
+      comment: "Allow deployments in Rancher system namespaces"
+      criteria:
+      - name: namespace
+        op: containsAny
+        value: cattle-system,cattle-dashboards,cattle-fleet-system,cattle-impersonation-system,cattle-monitoring-system
+      action: allow
+    allow-managed-service-nfs-provisioner:
+      ## Helm-Chart does not support readiness probes
+      ## Helm-Chart does not support liveness probes
+      ## Must be run as root to create volumes on NFS volume
+      comment: "Allow deployments of NFS provisioner. Deployment needs to run as root."
+      criteria:
+      - name: image
+        op: containsAny
+        path: image
+        value: harbor.infra.k8s.akdb.net/infrastruktur/sig-storage/nfs-subdir-external-provisioner:*
+      - name: namespace
+        op: containsAny
+        path: namespace
+        value: managed-services
+      action: allow
+    allow-logging-system-promtail:
+      ## Promtail has to run with GID 0
+      ## Promtail has tu run with UID 0
+      comment: "Allow deployments of Promtail. Daemonset has to run with UID/GID 0 (root)."
+      criteria:
+      - name: image
+        op: containsAny
+        path: image
+        value: harbor.infra.k8s.akdb.net/infrastruktur/promtail/promtail:*
+      - name: namespace
+        op: containsAny
+        path: namespace
+        value: logging-system
+      action: allow

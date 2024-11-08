@@ -1,0 +1,5 @@
+apiVersion: v2
+name: neuvector-config
+description: NeuVector configmaps and secrets
+version: 0.0.1
+appVersion: 0.0.1

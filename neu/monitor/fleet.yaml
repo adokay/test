@@ -1,0 +1,31 @@
+defaultNamespace: neuvector
+labels:
+  devops.akdb.de/role: "neuvector-monitor"
+
+helm:
+  takeOwnership: true
+  releaseName: neuvector-monitor
+  chart: oci://harbor.infra.k8s.akdb.net/infrastruktur/helm-charts/neuvector/monitor
+  version: 2.8.2 # App Version 5.4.0
+  valuesFiles:
+  - values.yaml
+  valuesFrom:
+  - secretKeyRef:
+      name: neuvector-helm-secrets
+      key: secrets.yaml
+
+# targetCustomizations:
+# - name: playground
+#   helm:
+#     version: 2.8.0
+#     values:
+#       exporter:
+#         image:
+#           repository: monitor/mirrored-neuvector-prometheus-exporter
+#           tag: 1-1.0.0
+#   clusterName: playground
+
+dependsOn:
+- name: neuvector-fleet-crd
+- name: neuvector-fleet-neuvector-config
+- name: neuvector-fleet-core
