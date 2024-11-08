@@ -18,25 +18,24 @@ diff:
     - {"op":"remove", "path":"/spec/duration"}
 
 targetCustomizations:
-- name: rke-test
+  #- name: rke-test
+  #  helm:
+  #    repo: https://charts.rancher.io
+  #    version: "104.0.2+up2.8.0"
+  #    valuesFiles:
+  #    - rke-test-neuvector-values.yaml 
+  #  clusterSelector:
+  #    matchLabels:
+  #      management.cattle.io/cluster-display-name: rke
+- name: rke-int
   helm:
     repo: https://charts.rancher.io
     version: "104.0.2+up2.8.0"
     valuesFiles:
-    - rke-test-neuvector-values.yaml 
+    - rke-int-neuvector-values.yaml 
   clusterSelector:
     matchLabels:
       management.cattle.io/cluster-display-name: rke
-        #- name: rke-int
-        #  helm:
-        #    repo: https://charts.rancher.io
-        #    version: "104.0.2+up2.8.0"
-        #    valuesFiles:
-        #    - rke-int-neuvector-values.yaml 
-        #  clusterSelector:
-        #    matchLabels:
-        #      management.cattle.io/cluster-display-name: rke-int
-        #      stage: rke-int
         #- name: rke-prod
         #  helm:
         #    repo: https://charts.rancher.io
