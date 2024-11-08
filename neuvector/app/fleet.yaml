@@ -20,7 +20,7 @@ diff:
 targetCustomizations:
 - name: rke-test
   helm:
-    repo: https://charts.rancher.io/g
+    repo: https://charts.rancher.io
     version: "104.0.2+up2.8.0"
     valuesFiles:
     - rke-test-neuvector-values.yaml 
@@ -29,7 +29,7 @@ targetCustomizations:
       management.cattle.io/cluster-display-name: rke
         #- name: rke-int
         #  helm:
-        #    repo: https://charts.rancher.io/g
+        #    repo: https://charts.rancher.io
         #    version: "104.0.2+up2.8.0"
         #    valuesFiles:
         #    - rke-int-neuvector-values.yaml 
@@ -39,7 +39,7 @@ targetCustomizations:
         #      stage: rke-int
         #- name: rke-prod
         #  helm:
-        #    repo: https://charts.rancher.io/g
+        #    repo: https://charts.rancher.io
         #    version: "104.0.2+up2.8.0"
         #    valuesFiles:
         #    - rke-prod-neuvector-values.yaml 
@@ -48,7 +48,7 @@ targetCustomizations:
         #      management.cattle.io/cluster-display-name: rke-prod
         #- name: local
         #  helm:
-        #    repo: https://charts.rancher.io/g
+        #    repo: https://charts.rancher.io
         #    version: "104.0.2+up2.8.0"
         #    valuesFiles:
         #    - local-neuvector-values.yaml 
