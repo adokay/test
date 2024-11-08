@@ -1,0 +1,57 @@
+defaultNamespace: cattle-neuvector-system
+dependsOn:
+  - name: nahi-neuvector-crd
+helm:
+  repo: https://charts.rancher.io
+  version: "104.0.2+up2.8.0"
+  chart: neuvector
+  releaseName: neuvector
+
+
+diff:         
+  comparePatches:
+  - apiVersion: cert-manager.io/v1
+    kind: Certificate
+    name: neuvector-internal
+    namespace: cattle-neuvector-system
+    operations:
+    - {"op":"remove", "path":"/spec/duration"}
+
+targetCustomizations:
+  #- name: rke-test
+  #  helm:
+  #    repo: https://charts.rancher.io
+  #    version: "104.0.2+up2.8.0"
+  #    valuesFiles:
+  #    - rke-test-neuvector-values.yaml 
+  #  clusterSelector:
+  #    matchLabels:
+  #      management.cattle.io/cluster-display-name: rke
+- name: rke-int
+  helm:
+    repo: https://charts.rancher.io
+    version: "104.0.2+up2.8.0"
+    valuesFiles:
+    - default-chart-values.yaml 
+  clusterSelector:
+    matchLabels:
+      management.cattle.io/cluster-display-name: rke
+        #- name: rke-prod
+        #  helm:
+        #    repo: https://charts.rancher.io
+        #    version: "104.0.2+up2.8.0"
+        #    valuesFiles:
+        #    - rke-prod-neuvector-values.yaml 
+        #  clusterSelector:
+        #    matchLabels:
+        #      management.cattle.io/cluster-display-name: rke-prod
+        #- name: local
+        #  helm:
+        #    repo: https://charts.rancher.io
+        #    version: "104.0.2+up2.8.0"
+        #    valuesFiles:
+        #    - local-neuvector-values.yaml 
+        #  clusterSelector:
+        #    matchLabels:
+        #      management.cattle.io/cluster-display-name: local
+
