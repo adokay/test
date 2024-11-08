@@ -475,7 +475,7 @@ cve:
     runAsUser: 5402 # MUST be set for Rancher hardened cluster
   scanner:
     enabled: true
-    replicas: 3
+    replicas: 1
     dockerPath: ""
     strategy:
       type: RollingUpdate
