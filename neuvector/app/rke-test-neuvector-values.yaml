@@ -39,7 +39,7 @@ controller:
     repository: rancher/mirrored-neuvector-controller
     tag: 5.3.3
     hash:
-  replicas: 3
+  replicas: 1
   disruptionbudget: 0
   schedulerName:
   priorityClassName:
