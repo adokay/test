@@ -1,0 +1,58 @@
+defaultNamespace: cattle-neuvector-system
+dependsOn:
+  - name: neuvector-crd
+helm:
+  repo: https://susemanager.suse/pub/helm
+  version: "103.0.4+up2.7.7"
+  chart: neuvector
+  releaseName: neuvector
+
+
+diff:         
+  comparePatches:
+  - apiVersion: cert-manager.io/v1
+    kind: Certificate
+    name: neuvector-internal
+    namespace: cattle-neuvector-system
+    operations:
+    - {"op":"remove", "path":"/spec/duration"}
+
+targetCustomizations:
+- name: rke-test
+  helm:
+    repo: https://susemanager.suse/pub/helm
+    version: "103.0.4+up2.7.7"
+    valuesFiles:
+    - rke-test-neuvector-values.yaml 
+  clusterSelector:
+    matchLabels:
+      management.cattle.io/cluster-display-name: rke-test
+- name: rke-int
+  helm:
+    repo: https://susemanager.suse/pub/helm
+    version: "103.0.4+up2.7.7"
+    valuesFiles:
+    - rke-int-neuvector-values.yaml 
+  clusterSelector:
+    matchLabels:
+      management.cattle.io/cluster-display-name: rke-int
+      stage: rke-int
+- name: rke-prod
+  helm:
+    repo: https://susemanager.suse/pub/helm
+    version: "103.0.4+up2.7.7"
+    valuesFiles:
+    - rke-prod-neuvector-values.yaml 
+  clusterSelector:
+    matchLabels:
+      management.cattle.io/cluster-display-name: rke-prod
+- name: local
+  helm:
+    repo: https://susemanager.suse/pub/helm
+    version: "103.0.4+up2.7.7"
+    valuesFiles:
+    - local-neuvector-values.yaml 
+  clusterSelector:
+    matchLabels:
+      management.cattle.io/cluster-display-name: local
+

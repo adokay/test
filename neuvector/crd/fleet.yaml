@@ -1,0 +1,9 @@
+defaultNamespace: cattle-neuvector-system
+helm:
+  repo: https://susemanager.suse/pub/helm
+  version: "103.0.4+up2.7.7"
+  chart: neuvector-crd
+  releaseName: neuvector-crd
+  takeOwnership: true
+  valuesFiles:
+  - default-values.yaml
