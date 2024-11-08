@@ -3,7 +3,7 @@ dependsOn:
   - name: nahi-neuvector-crd
 helm:
   repo: https://charts.rancher.io
-  version: "104.0.2+up2.8.0"
+  version: "104.0.0+up2.7.7"
   chart: neuvector
   releaseName: neuvector
 
@@ -21,7 +21,7 @@ targetCustomizations:
   #- name: rke-test
   #  helm:
   #    repo: https://charts.rancher.io
-  #    version: "104.0.2+up2.8.0"
+  #    version: "104.0.0+up2.7.7"
   #    valuesFiles:
   #    - rke-test-neuvector-values.yaml 
   #  clusterSelector:
@@ -30,7 +30,7 @@ targetCustomizations:
 - name: rke-int
   helm:
     repo: https://charts.rancher.io
-    version: "104.0.2+up2.8.0"
+    version: "104.0.0+up2.7.7"
     valuesFiles:
     - default-chart-values.yaml 
   clusterSelector:
@@ -39,7 +39,7 @@ targetCustomizations:
         #- name: rke-prod
         #  helm:
         #    repo: https://charts.rancher.io
-        #    version: "104.0.2+up2.8.0"
+        #    version: "104.0.0+up2.7.7"
         #    valuesFiles:
         #    - rke-prod-neuvector-values.yaml 
         #  clusterSelector:
@@ -48,7 +48,7 @@ targetCustomizations:
         #- name: local
         #  helm:
         #    repo: https://charts.rancher.io
-        #    version: "104.0.2+up2.8.0"
+        #    version: "104.0.0+up2.7.7"
         #    valuesFiles:
         #    - local-neuvector-values.yaml 
         #  clusterSelector:
