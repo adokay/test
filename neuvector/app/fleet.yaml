@@ -1,6 +1,6 @@
 defaultNamespace: cattle-neuvector-system
 dependsOn:
-  - name: neuvector-crd
+  - name: nahi-neuvector-crd
 helm:
   repo: https://charts.rancher.io
   version: "104.0.2+up2.8.0"
