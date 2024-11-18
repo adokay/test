@@ -2,3 +2,5 @@ defaultNamespace: kasten-io
 helm:
   chart: https://charts.kasten.io/k10-6.0.6.tgz
   releaseName: kasten
+  valuesFiles:
+    - values.yaml
