@@ -16,8 +16,6 @@ targetCustomizations:
       auth:
         ldap: 
           dashboardURL: "https://kasten-apps-dev.internal.bachmann.at/kasten-kasten/"
-  kustomize:
-    dir: overlays/ako-workaround
 - name: internal-apps
   clusterSelector:
     matchLabels:
@@ -29,8 +27,6 @@ targetCustomizations:
       auth:
         ldap: 
           dashboardURL: "https://kasten-internal-apps.internal.bachmann.at/kasten-kasten/"
-  kustomize:
-    dir: overlays/ako-workaround
 - name: external-apps
   clusterSelector:
     matchLabels:
@@ -42,5 +38,3 @@ targetCustomizations:
       auth:
         ldap: 
           dashboardURL: "https://kasten-external-apps.internal.bachmann.at/kasten-kasten/"
-  kustomize:
-    dir: overlays/ako-workaround
