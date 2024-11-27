@@ -22,7 +22,7 @@ auth:
   k10AdminGroups: []
 ingress:
   create: true
-  class: avi-lb
+  class: nginx
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
   tls:
