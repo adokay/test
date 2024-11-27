@@ -1,0 +1,39 @@
+auth:
+  ldap: 
+    enabled: true
+    host: "10.10.10.34"
+    bindDN: "cn=tr_ldap,ou=SystemUser,ou=BachmannProductive,dc=bachmann,dc=at"
+    bindPW: "<TODO:password>"
+    startTLS: false
+    userSearch: 
+      baseDN: "OU=User,OU=BachmannProductive,DC=bachmann,DC=at"
+      filter: "(objectClass=user)"
+      username: "sAMAccountName"
+      idAttr: "sAMAccountName"
+      emailAttr: "mail"
+      nameAttr: "displayName"
+    groupSearch: 
+      baseDN: "ou=Groups,ou=BachmannProductive,DC=bachmann,DC=at"
+      filter: "(objectclass=group)"
+    dashboardURL: "https://kasten-apps-dev.internal.bachmann.at/kasten-kasten/"
+    insecureSkipVerifySSL: true
+  k10AdminUsers: [<TODO:list-of-mail-adresses>]
+  groupAllowList: []
+  k10AdminGroups: []
+ingress:
+  host: test.abc
+  create: true
+  class: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  tls:
+    enabled: true
+    secretName: kasten-tls
+
+eula: 
+  accept: true
+  company: "Bachmann electronic GmbH"
+  email: "edv@bachmann.info"
+license: "<TODO:license-key>"
+rbac: 
+  create: true
