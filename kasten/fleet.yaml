@@ -4,3 +4,5 @@ helm:
   releaseName: kasten
   valuesFiles:
     - values.yaml
+  kustomize:
+    dir: overlays/ako-workaround
