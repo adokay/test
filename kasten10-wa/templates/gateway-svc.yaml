@@ -4,6 +4,7 @@ metadata:
   name: gateway
   namespace: kasten-io
   annotations:
+    "helm.sh/hook": post-install,post-upgrade
     meta.helm.sh/release-name: kasten
     meta.helm.sh/release-namespace: kasten-io
   labels:
