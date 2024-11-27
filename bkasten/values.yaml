@@ -21,6 +21,7 @@ auth:
   groupAllowList: []
   k10AdminGroups: []
 ingress:
+  host: test.abc
   create: true
   class: nginx
   annotations:
