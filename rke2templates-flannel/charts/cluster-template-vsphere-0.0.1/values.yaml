@@ -1,0 +1,36 @@
+cloudprovider: vsphere
+#cloudCredentialSecretName: molmedo
+kubernetesVersion:  v1.26.14+rke2r1
+# Specify nodepool options. Can add multiple node groups, specify etcd, controlplane and worker roles.
+nodepools:
+- etcd: true
+  controlplane: true
+  worker: true
+  quantity: 1
+  # Pause node pool
+  paused: false
+  # specify displayName
+  displayName: "Master Pool 1"
+  name: "nodepool-1-molmedo"
+  cloneFrom: "/rancherdc/vm/templates-folder/ubuntu-22.04-cloudimg"
+  cpuCount: '4'
+  creationType: "template"
+  vcenter: "ranchervcenter.sup.scz.suse.com"
+  datacenter: "rancherdc"
+  datastore: "/rancherdc/datastore/rancherDatastore01"
+  datastoreCluster: ""
+  diskSize: '20480'
+  folder: "/rancherdc/vm/molmedo-vm-folder"
+  # hostsystem: ""
+  memorySize: '4096'
+  cfgparam: ["disk.enableUUID=TRUE"]
+  pool: "/rancherdc/host/rancheresxi01.sup.scz.suse.com/Resources"
+  sshPort: '22'
+  sshUserGroup: staff
+  vcenterPort: '443'
+######
+monitoring:
+  enabled: false
+######
+cluster:
+  cni: flannel
