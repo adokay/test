@@ -1,0 +1,8 @@
+defaultNamespace: kasten-io
+helm:
+  chart: ./k10
+  releaseName: kasten
+  valuesFiles:
+    - values.yaml
+kustomize:
+  dir: overlays/ako-workaround
