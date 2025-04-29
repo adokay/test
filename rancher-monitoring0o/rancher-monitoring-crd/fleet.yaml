@@ -1,5 +1,5 @@
 defaultNamespace: cattle-monitoring-system
 helm:
   releaseName: rancher-monitoring-crd
-  chart: oci://ghcr.io/adlightme/rancher-monitoring
+  chart: oci://ghcr.io/adlightme/rancher-monitoring-crd
   version: 106.0.1+up66.7.1-rancher.10
