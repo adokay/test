@@ -1,6 +1,5 @@
 defaultNamespace: cattle-monitoring-system
 helm:
   releaseName: rancher-monitoring-crd
-  chart: rancher-monitoring-crd
-  repo: oci://registry01.suse/helm/rancher-monitoring
+  chart: oci://registry01.suse/helm/rancher-monitoring
   version: 106.0.1+up66.7.1-rancher.10
