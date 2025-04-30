@@ -1,6 +1,4 @@
 defaultNamespace: cattle-monitoring-system
-dependsOn:
-  - name: rancher-monitoring-crd
 helm:
   releaseName: rancher-monitoring
   chart: oci://ghcr.io/adlightme/rancher-monitoring
