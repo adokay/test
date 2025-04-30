@@ -1,0 +1,68 @@
+defaultNamespace: cattle-monitoring-system
+helm:
+  releaseName: rancher-monitoring
+  repo: https://charts.rancher.io
+  chart: rancher-monitoring
+  version: 106.0.1+up66.7.1-rancher.10
+diff:
+  comparePatches:
+    - apiVersion: admissionregistration.k8s.io/v1
+      kind: MutatingWebhookConfiguration
+      name: rancher-monitoring-admission
+      operations:
+        - {"op":"remove", "path":"/webhooks/0/failurePolicy"}
+    - apiVersion: admissionregistration.k8s.io/v1
+      kind: ValidatingWebhookConfiguration
+      name: rancher-monitoring-admission
+      operations:
+        - {"op":"remove", "path":"/webhooks/0/failurePolicy"}
+targetCustomizations:
+- name: onerke1
+  helm:
+    values:
+      global:
+        cattle:
+          clusterId: onerke1
+          clusterName: onerke1
+  clusterSelector:
+    matchLabels:
+      management.cattle.io/cluster-display-name: onerke1
+- name: rke2ag
+  helm:
+    values:
+      global:
+        cattle:
+          clusterId: rke2ag
+          clusterName: rke2ag
+  clusterSelector:
+    matchLabels:
+      management.cattle.io/cluster-display-name: rke2ag
+- name: rke2custom
+  helm:
+    values:
+      global:
+        cattle:
+          clusterId: rke2custom
+          clusterName: rke2custom
+  clusterSelector:
+    matchLabels:
+      management.cattle.io/cluster-display-name: rke2custom
+- name: rke12
+  helm:
+    values:
+      global:
+        cattle:
+          clusterId: rke12
+          clusterName: rke12
+  clusterSelector:
+    matchLabels:
+      management.cattle.io/cluster-display-name: rke12
+- name: local
+  helm:
+    values:
+      global:
+        cattle:
+          clusterName: local
+  clusterSelector:
+    matchLabels:
+      management.cattle.io/cluster-display-name: local
